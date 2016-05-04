@@ -45,7 +45,6 @@ then
    # Install additional packages
    dnf install -y strace
    dnf install -y gdb
-   dnf install -y vim
    dnf install -y docker git golang bind-utils bash-completion
    dnf install -y kernel-debug-modules-extra
    dnf clean all
@@ -63,6 +62,17 @@ then
    # Add go environment to be able to build
    echo 'export GOPATH=/go' > /etc/profile.d/go.sh
    echo 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin' >> /etc/profile.d/go.sh
+
+   # Patch grub2 to use config to use the right entry, this is bad but it works for now
+   # this loads the correct kernel after reboots
+   sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=1/g" /etc/default/grub
+   grub2-mkconfig -o /boot/grub2/grub.cfg
+
+   # Load modules needed by tcd
+   # https://github.com/kinvolk/tcd
+   # need reboot to be effective
+   echo 'ifb' > /etc/modules-load.d/traffic-control.conf
+   echo 'sch_netem' >> /etc/modules-load.d/traffic-control.conf
 
    touch ${__TESTS_DIR}/${__base}.status.configured
 fi
