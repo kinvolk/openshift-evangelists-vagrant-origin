@@ -14,8 +14,8 @@ HOSTNAME = "origin"
 Vagrant.configure(2) do |config|
 
    # This vm can be created both for centos or fedora
-   config.vm.box = "centos/7" 
-   # config.vm.box = "fedora/23-cloud-base"
+   # config.vm.box = "centos/7"
+   config.vm.box = "fedora/25-cloud-base"
    config.vm.box_check_update = false
    config.vm.network "private_network", ip: "10.2.2.2"
    config.vm.synced_folder ".", "/vagrant", disabled: true
